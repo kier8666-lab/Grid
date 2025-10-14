@@ -1,0 +1,22 @@
+version: "3.9"
+services:
+  gateway:
+    volumes:
+      - ./schemas:/app/schemas:ro
+      - ./seeds:/app/seeds:ro
+      - ./grafana:/app/grafana:ro
+  auto_integrator:
+    volumes:
+      - ./schemas:/app/schemas:ro
+      - ./seeds:/app/seeds:ro
+  rla:
+    volumes:
+      - dna_data:/data/dna
+  agents_pv:
+    volumes:
+      - ./seeds/pv_site.json:/app/input/pv_site.json:ro
+  agents_tax:
+    volumes:
+      - ./seeds/invoices.json:/app/input/invoices.json:ro
+volumes:
+  dna_data: {}

@@ -1,0 +1,7 @@
+FROM node:20
+WORKDIR /app
+COPY package.json package-lock.json* ./
+RUN npm install express || npm install
+COPY mock_agent_node.js .
+EXPOSE 8081
+CMD ["node", "mock_agent_node.js"]
