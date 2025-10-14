@@ -1,26 +1,33 @@
-# DUET GRID v2.1-pre — Starter Bundle
+# DUET GRID v2.1-pre — Enterprise Add-on
 
-Zawartość:
-- `openapi.yaml` — Gateway API
-- `schemas/` — JSON Schemas (audit, kpi, agent.run)
-- `docker-compose.yml` + `compose.override.yml` — MVP lokalnie
-- `seeds/` — próbki danych (PV, faktury, granty)
-- `grafana/dashboards/duet-kpi-dashboard.json` — dashboard KPI
+Dodatki klasy enterprise:
+- Rozszerzone schematy JSON (trade, grants, petlive, ui, life, safety)
+- Mock-service (Python/Node) do testów end-to-end
+- Pipeline CI (GitHub Actions) z walidacją kontraktów, smoke-testem i SBOM
 
-## Szybki start
+## Uruchomienie lokalne
 ```bash
-cd duet-grid-v2.1-pre
-docker compose -f docker-compose.yml -f compose.override.yml up -d
-curl http://localhost:8080/status
+docker compose up -d --build
+curl -X POST http://localhost:8081/run -H "Content-Type: application/json" -d '{"agent":"PV-Optimizer","payload":{"test":true}}'
 ```
 
-## Walidacja kontraktów (przykład)
-- `schemas/duet.audit.decision.v1.json`
-- `schemas/duet.kpi.tick.v1.json`
-- `schemas/duet.command.agent.run.v1.json`
+## Integracja z repo GitHub
+- Skopiuj `.github/workflows/ci.yml` do repo.
+- Push → zakładka Actions rozpocznie CI (walidacja schemas vs seeds + SBOM).
 
-## Struktura BUS (NATS/Kafka)
-- `duet.command.*`, `duet.event.*`, `duet.audit.*`, `duet.kpi.*`, `duet.alert.*`, `duet.dna.*`
+## Tematy BUS (NATS/Kafka)
+- duet.command.agent.run.v1
+- duet.event.status.update.v1
+- duet.kpi.tick.v1
+- duet.audit.decision.v1
+- duet.alert.safety.v1
+- duet.dna.update.v1
+- duet.trade.signal.v1
+- duet.grant.match.v1
+- duet.petlive.match.v1
+- duet.ui.update.v1
+- duet.life.plan.v1
 
-## Uwaga
-Obrazy `duet/*:2.1-pre` są placeholderami — podłącz tutaj swoje implementacje agentów i gatewaya.
+## Noty operacyjne
+- Wszystkie schematy są forward-compatible (opcjonalne pola).
+- Dodając nowe wersje, stosuj sufiks `.vN` i zachowuj kompatybilność wsteczną.
