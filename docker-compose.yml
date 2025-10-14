@@ -1,0 +1,47 @@
+version: "3.9"
+services:
+  gateway:
+    image: duet/grid-gateway:2.1-pre
+    environment:
+      - BUS_URL=nats://bus:4222
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel:4317
+    ports: ["8080:8080"]
+    depends_on: [bus]
+
+  auto_integrator:
+    image: duet/auto-integrator:2.1-pre
+    environment:
+      - BUS_URL=nats://bus:4222
+    depends_on: [bus]
+
+  rla:
+    image: duet/rla:2.1-pre
+    environment:
+      - BUS_URL=nats://bus:4222
+      - DNA_STORE=redis://dna:6379
+    depends_on: [bus, dna]
+
+  agents_pv:
+    image: duet/agent-pv-optimizer:2.1-pre
+    environment: [ "BUS_URL=nats://bus:4222" ]
+    depends_on: [bus]
+
+  agents_tax:
+    image: duet/agent-taxpilot:2.1-pre
+    environment: [ "BUS_URL=nats://bus:4222" ]
+    depends_on: [bus]
+
+  bus:
+    image: nats:2.10
+    ports: ["4222:4222"]
+
+  dna:
+    image: redis:7
+
+  otel:
+    image: otel/opentelemetry-collector:0.103.1
+
+
+mock_agent:
+  build: .
+  ports: ["8081:8081"]

@@ -1,0 +1,80 @@
+openapi: 3.0.3
+info:
+  title: DUET GRID Gateway
+  version: "2.1-pre"
+  description: >
+    Publiczny gateway DUET GRID (GridManager). Zapewnia status, zarządzanie MCDA,
+    uruchamianie agentów oraz dostęp do raportów decyzji.
+servers:
+  - url: http://localhost:8080
+paths:
+  /status:
+    get:
+      summary: Status systemu
+      responses:
+        '200':
+          description: OK
+  /agents:
+    get:
+      summary: Lista agentów dostępnych w GRID
+      responses:
+        '200':
+          description: Lista agentów
+  /commands/agent/run:
+    post:
+      summary: Uruchom agenta z payloadem
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AgentRunCommand'
+      responses:
+        '202':
+          description: Przyjęto do realizacji
+  /mcda/weights:
+    get:
+      summary: Pobierz aktualne wagi MCDA
+      responses:
+        '200':
+          description: Bieżące wagi
+    post:
+      summary: Ustaw/kalibruj wagi MCDA
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties:
+                type: number
+      responses:
+        '200':
+          description: Zaktualizowano wagi
+  /reports/decision/{ulid}:
+    get:
+      summary: Pobierz raport decyzji po ULID
+      parameters:
+        - in: path
+          name: ulid
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Raport decyzji
+components:
+  schemas:
+    AgentRunCommand:
+      type: object
+      required: [agent, payload]
+      properties:
+        agent:
+          type: string
+          example: PV-Optimizer
+        payload:
+          type: object
+          additionalProperties: true
+        trace_id:
+          type: string
+          description: Opcjonalny identyfikator śladu decyzji (DL-...)
