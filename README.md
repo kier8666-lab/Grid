@@ -4,6 +4,12 @@ Dodatki klasy enterprise:
 - Rozszerzone schematy JSON (trade, grants, petlive, ui, life, safety)
 - Mock-service (Python/Node) do testów end-to-end
 - Pipeline CI (GitHub Actions) z walidacją kontraktów, smoke-testem i SBOM
+- Integracja z systemem ASA Apex v7.2 Sovereign Persistence ecosystem
+
+## Documentation
+- [README_ENTERPRISE.md](README_ENTERPRISE.md)
+- [CONTRIBUTING.md](CONTRIBUTING.md)
+- [SECURITY.md](SECURITY.md)
 
 ## Uruchomienie lokalne
 ```bash
