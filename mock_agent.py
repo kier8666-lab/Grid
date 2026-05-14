@@ -13,5 +13,5 @@ async def run(request: Request):
         "agent": agent,
         "trace_id": trace_id,
         "status": "OK",
-        "ts": datetime.datetime.utcnow().isoformat()+"Z"
+        "ts": datetime.datetime.now(datetime.timezone.utc).isoformat().replace("+00:00", "Z")
     }
