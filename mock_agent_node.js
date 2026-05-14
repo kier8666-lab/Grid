@@ -5,4 +5,9 @@ app.post('/run', (req,res)=>{
   const {agent='unknown', trace_id='DL-local'} = req.body || {};
   res.json({agent, trace_id, status:'OK', ts:new Date().toISOString()});
 });
-app.listen(8081, ()=>console.log('Mock Agent Node listening 8081'));
+
+if (require.main === module) {
+  app.listen(8081, ()=>console.log('Mock Agent Node listening 8081'));
+}
+
+module.exports = app;
