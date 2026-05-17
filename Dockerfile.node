@@ -1,7 +1,26 @@
 FROM node:20
+
+# Create a non-root user
+RUN groupadd -r appgroup && useradd -r -g appgroup appuser
+
 WORKDIR /app
-COPY package.json package-lock.json* ./
+
+# Copy package files and set ownership
+COPY --chown=appuser:appgroup package.json package-lock.json* ./
+
+# Install dependencies as the non-root user or switch to it after install
+# Here we'll install as root but ensure permissions are correct
 RUN npm install express || npm install
-COPY mock_agent_node.js .
+
+# Copy application code and set ownership
+COPY --chown=appuser:appgroup mock_agent_node.js .
+
+# Ensure the app directory is owned by the new user
+RUN chown -R appuser:appgroup /app
+
+# Switch to the non-root user
+USER appuser
+
 EXPOSE 8081
+
 CMD ["node", "mock_agent_node.js"]
